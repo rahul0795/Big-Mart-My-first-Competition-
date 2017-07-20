@@ -1,29 +1,63 @@
-train <- read.csv("traindata.csv", stringsAsFactors = FALSE)
+# This is the R code of the BIG MART PREDICTION -3 from analyticsvidhya.com
+# This is my first submission to the analyticsvidhya.com and it scored an RMSE of 1200.
+# I have used simpe linear regression model to predict the "Item_Outlet_Sales"
+
+# The following piece of code read the train and test data sets. I have explicitly put stringsAsFactors = FALSE becuase i don't want R to
+# Convert my characters into factors.
+
 train <- read.csv("traindata.csv", stringsAsFactors = FALSE)
 test <- read.csv("testdata.csv", stringsAsFactors = FALSE)
+
+# Let's quickly Check the structure of these two data sets
 str(train)
 str(test)
+
+# As expected, the train data set has one more variable than the test data. That's obvious because the whole process of this is to predict
+# The one variable of test data
+# For the purpose of claeaning data and exploring it, it's always a good idea to merge your two data sets.
+# The response varaible "Item_Outlet_Sales" can be created using the following commands:
+
 test$Item_Outlet_Sales <- 1
+
+# Now, check the structure of the test dataset
+
 str(test)
+# It will have exactly same number of varaibles as in the train data set
+# the train and test can be combined with the rbind command as follows:
 full <- rbind(train, test)
+
+#Lets quicky check the structure of the full data set
 str(full)
-table(full$Item_Identifier)
+#Now, we have total 14,204 rows and 12 columns
 str(full)
-qplot(Item_Weight, data = full)
-library(ggplot2)
-qplot(Item_Weight, data = full)
-qplot(Item_Weight, data = full, bins = 50)
+
+# Let's Do a summary of the data and see what can be infered
+
 summary(full)
-summary(full)
+# The output of the above commnad give us two important things to look for. The first is "Item_Visibility" and the second is "Item_Weight"
+# Theare are some missing values. let's impute them with the median
 full$Item_Weight[is.na(full$Item_Weight)] <- median(full$Item_Weight, na.rm = TRUE)
+
+# Now, again check summary to confirm it
 summary(full)
+# Is there any other NA. The following command can tell this to you: 
 table(is.na(full))
-full$Item_Visibility
-full$Item_Visibility[full$Item_Visibility == 0.0,]
-full$Item_Visibility[full$Item_Visibility == 0.0]
+
+#The other important thing from the summary command was "Item_Visibilitry". the minimum value of visibility is 0 which is absurd. it can
+# also be imputed by the median since it is also a continuous varaible
+
 full$Item_Visibility[full$Item_Visibility == 0.0] <- median(full$Item_Visibility)
-full$Item_Visibility[full$Item_Visibility == 0.0]
+
+# Again, do the summary to check these imputations.
 summary(full)
+
+================
+
+DATA exploration
+
+================
+
+
 table(full$Outlet_Establishment_Year)
 qplot(Outlet_Establishment_Year, Item_Outlet_Sales, geom = "bar")
 qplot(Outlet_Establishment_Year, Item_Outlet_Sales, data = full, geom = "bar")
